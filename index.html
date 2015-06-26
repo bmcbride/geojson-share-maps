@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="A responsive web mapping application for viewing GeoJSON files">
+    <meta name="author" content="Bryan McBride">
+    <title name="title">GeoJSON Mapper</title>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.css">
+    <link rel="stylesheet" href="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css">
+    <link rel="stylesheet" href="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.mapbox.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicon-152.png">
+    <link rel="icon" sizes="196x196" href="assets/img/favicon-196.png">
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <div class="navbar-icon-container">
+            <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-bars fa-lg white"></i></a>
+            <a href="#" class="navbar-icon pull-right visible-xs" id="sidebar-toggle-btn"><i class="fa fa-search fa-lg white"></i></a>
+          </div>
+          <span class="navbar-brand" href="#" name="title" id="navbar-title">GeoJSON Mapper</span>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+                <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i class="fa fa-refresh white"></i>&nbsp;&nbsp;Refresh <b class="caret"></b></a>
+                <ul class="dropdown-menu dropdown-menu-form">
+                  <li><a href="#" id="refresh-btn" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Refresh Now</a></li>
+                  <li class="dropdown-input"><input type="checkbox" id="auto-refresh">&nbsp;&nbsp;Auto Refresh (every minute)</li>
+                </ul>
+            </li>
+            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt white"></i>&nbsp;&nbsp;Full Extent</a></li>
+            <li><a href="" id="download" download="" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-cloud-download white"></i>&nbsp;&nbsp;Download Data</a></li>
+            <!-- <li class="dropdown">
+                <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i class="fa fa-cloud-download white"></i>&nbsp;&nbsp;Download <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="" id="csv-download" download="" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;CSV</a></li>
+                  <li><a href="" id="geojson-download" download="" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;GeoJSON</a></li>
+                  <li><a href="" id="raw-kml-download" download="" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Raw KML</a></li>
+                  <li><a href="" id="kml-feed-download" download="feed.kml" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;KML Feed</a></li>
+                </ul>
+            </li> -->
+            <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-search white"></i>&nbsp;&nbsp;Search</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-share white"></i>&nbsp;&nbsp;Share<b class="caret"></b></a>
+              <ul class="dropdown-menu" style="padding: 10px; min-width: 100px;">
+                <li>
+                  <iframe id="twitter-share" src="" width="100" height="21" title="Twitter Tweet Button" style="border: 0; overflow: hidden;"></iframe>
+                </li>
+                <li>
+                  <div id="fb-root"></div>
+                  <script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";fjs.parentNode.insertBefore(js, fjs);}(document, 'script', 'facebook-jssdk'));</script>
+                  <div class="fb-share-button" data-layout="button_count" data-href=""></div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <div id="container">
+      <div id="sidebar">
+        <div class="sidebar-wrapper">
+          <div class="panel panel-default" id="features">
+            <div class="panel-heading">
+              <h3 class="panel-title">Records
+              <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-xs-8 col-md-8">
+                  <input type="text" class="form-control search" placeholder="Search" />
+                </div>
+                <div class="col-xs-4 col-md-4">
+                  <button type="button" class="btn btn-primary pull-right sort" data-sort="feature-name" id="sort-btn"><i class="fa fa-sort"></i>&nbsp;&nbsp;Sort</button>
+                </div>
+              </div>
+            </div>
+            <div class="sidebar-table">
+              <table class="table table-hover" id="feature-list">
+                <thead class="hidden">
+                  <tr>
+                    <th>Icon</th>
+                  <tr>
+                  <tr>
+                    <th>Name</th>
+                  <tr>
+                  <tr>
+                    <th>Chevron</th>
+                  <tr>
+                </thead>
+                <tbody class="list"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="map"></div>
+    </div>
+    <div id="loading">
+      <div class="loading-indicator">
+        <div class="progress progress-striped active">
+          <div class="progress-bar progress-bar-info progress-bar-full"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title text-primary" id="feature-title"></h4>
+          </div>
+          <div class="modal-body" id="feature-info"></div>
+          <div class="modal-footer">
+            <div class="btn-group dropup pull-left">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="share-btn">
+                <i class="fa fa-share"></i>&nbsp;Share&nbsp;<span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#" target="_blank" id="share-hyperlink"><i class="fa fa-link"></i>&nbsp;Hyperlink</a></li>
+                <li><a href="#" target="_blank" id="share-twitter"><i class="fa fa-twitter"></i>&nbsp;Twitter</a></li>
+                <li><a href="#" target="_blank" id="share-facebook"><i class="fa fa-facebook"></i>&nbsp;Facebook</a></li>
+              </ul>
+            </div>
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js"></script>
+    <script src="//api.tiles.mapbox.com/mapbox.js/v2.2.1/mapbox.js"></script>
+    <script src="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js"></script>
+    <script src="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js"></script>
+    <script src="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>

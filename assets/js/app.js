@@ -204,6 +204,9 @@ featureLayer.on("click", function(e) {
   map.closePopup();
   var content = "<table class='table table-striped table-bordered table-condensed'>";
   $.each(e.layer.feature.properties, function(index, prop) {
+    if (!prop) {
+      prop = "";
+    }
     if (typeof prop == "string" && (prop.indexOf("http") === 0 || prop.indexOf("https") === 0)) {
       prop = "<a href='" + prop + "' target='_blank'>" + prop + "</a>";
     }

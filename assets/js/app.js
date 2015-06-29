@@ -1,6 +1,6 @@
 L.mapbox.accessToken = "pk.eyJ1IjoiYnJ5bWNicmlkZSIsImEiOiJXN1NuOFFjIn0.3YNvR1YOvqEdeSsJDa-JUw";
 
-var map, autoRefresh, featureList, sortOrder, titleField, userFields = [], urlParams = {};
+var map, autoRefresh, featureList, sortOrder, titleField, cluster, userFields = [], urlParams = {};
 
 $(document).ready(function() {
   fetchData();
@@ -73,6 +73,12 @@ if (urlParams.fields) {
   });
 }
 
+if (urlParams.cluster && (urlParams.cluster === "false" || urlParams.cluster === "False" || urlParams.cluster === "0")) {
+  cluster = false;
+} else {
+  cluster = true;
+}
+
 /* Basemap Layers */
 var mapboxOSM = L.tileLayer("https://{s}.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token="+L.mapbox.accessToken, {
   maxZoom: 19,
@@ -122,8 +128,13 @@ function getTitle(layer) {
   }
 }
 
-/* Overlay Layers */
-var featureLayer = L.mapbox.featureLayer().addTo(map);
+var markerClusters = new L.MarkerClusterGroup({
+  spiderfyOnMaxZoom: true,
+  showCoverageOnHover: false,
+  zoomToBoundsOnClick: true
+});
+
+var featureLayer = L.mapbox.featureLayer();
 
 featureLayer.on("ready", function(e) {
   featureLayer.eachLayer(function(layer) {
@@ -161,6 +172,7 @@ featureLayer.on("ready", function(e) {
   }
   featureList = new List("features", {valueNames: ["feature-name"]});
   featureList.sort("feature-name", {order: sortOrder});
+  markerClusters.clearLayers().addLayer(featureLayer);
 });
 
 featureLayer.once("ready", function(e) {
@@ -280,10 +292,16 @@ var baseLayers = {
   "Aerial Imagery": mapboxSat
 };
 
-var overlays = {
-  "<span name='title'>GeoJSON Data</span>": featureLayer
-};
+var overlays = {};
 
 var layerControl = L.control.layers(baseLayers, overlays, {
   collapsed: isCollapsed
 }).addTo(map);
+
+if (cluster === true) {
+  map.addLayer(markerClusters);
+  layerControl.addOverlay(markerClusters, "<span name='title'>GeoJSON Data</span>");
+} else {
+  map.addLayer(featureLayer);
+  layerControl.addOverlay(featureLayer, "<span name='title'>GeoJSON Data</span>");
+}

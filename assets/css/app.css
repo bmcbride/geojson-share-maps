@@ -140,15 +140,3 @@ input[type="radio"], input[type="checkbox"] {
     display: none !important;
   }
 }
-
-.small-marker {
-  clip: rect(auto auto 30px auto);
-}
-
-.medium-marker {
-  clip: rect(auto auto 40px auto);
-}
-
-.large-marker {
-  clip: rect(auto auto 50px auto);
-}

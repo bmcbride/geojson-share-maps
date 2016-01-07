@@ -139,26 +139,6 @@ var featureLayer = L.mapbox.featureLayer();
 featureLayer.on("ready", function(e) {
   featureLayer.eachLayer(function(layer) {
     $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '"><td class="feature-name">' + getTitle(layer) + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-    if (layer instanceof L.Marker) {
-      if (layer.options.icon.options.iconSize[0] == "20") {
-        layer.setIcon(L.icon({
-          "iconUrl": layer.options.icon.options.iconUrl,
-          "className": "small-marker"
-        }));
-      }
-      else if (layer.options.icon.options.iconSize[0] == "30") {
-        layer.setIcon(L.icon({
-          "iconUrl": layer.options.icon.options.iconUrl,
-          "className": "medium-marker"
-        }));
-      }
-      else if (layer.options.icon.options.iconSize[0] == "35") {
-        layer.setIcon(L.icon({
-          "iconUrl": layer.options.icon.options.iconUrl,
-          "className": "large-marker"
-        }));
-      }
-    }
   });
   if (urlParams.title && urlParams.title.length > 0) {
     var title = decodeURI(urlParams.title);

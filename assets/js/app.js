@@ -4,8 +4,6 @@ var map, autoRefresh, featureList, sortOrder, titleField, cluster, userFields = 
 
 $(document).ready(function() {
   fetchData();
-  $("#twitter-share").attr("src", "//platform.twitter.com/widgets/tweet_button.html?url="+document.URL);
-  $(".fb-share-button").attr("data-href", document.URL);
   $("#download").attr("href", urlParams.src);
 });
 
@@ -166,7 +164,7 @@ featureLayer.on("ready", function(e) {
       $("#feature-info").html(content);
       $("#featureModal").modal("show");
       $("#share-btn").click(function() {
-        var link = location.toString() + "&id=" + L.stamp(e.layer);
+        var link = location.toString() + "&id=" + L.stamp(e.target);
         $("#share-hyperlink").attr("href", link);
         $("#share-twitter").attr("href", "https://twitter.com/intent/tweet?url=" + encodeURIComponent(link) + "&via=fulcrumapp");
         $("#share-facebook").attr("href", "https://facebook.com/sharer.php?u=" + encodeURIComponent(link));

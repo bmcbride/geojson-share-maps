@@ -140,3 +140,10 @@ input[type="radio"], input[type="checkbox"] {
     display: none !important;
   }
 }
+
+.leaflet-touch .leaflet-control-locate {
+  box-shadow: none;
+  border: 1px solid #999;
+  border-color: rgba(0,0,0,.4);
+  background-clip: padding-box;
+}

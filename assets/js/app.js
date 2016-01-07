@@ -93,8 +93,7 @@ var mapboxSat = L.tileLayer("https://{s}.tiles.mapbox.com/v4/mapbox.streets-sate
 
 map = L.map("map", {
   zoom: 10,
-  layers: [mapboxOSM],
-  zoomControl: false
+  layers: [mapboxOSM]
 }).fitWorld();
 map.attributionControl.setPrefix("");
 
@@ -227,13 +226,8 @@ function zoomToFeature(id) {
   }
 }
 
-var zoomControl = L.control.zoom({
-  position: "bottomright"
-}).addTo(map);
-
 /* GPS enabled geolocation control set to follow the user's location */
 var locateControl = L.control.locate({
-  position: "bottomright",
   drawCircle: true,
   follow: true,
   setView: true,

@@ -93,8 +93,7 @@ var mapboxSat = L.tileLayer("https://{s}.tiles.mapbox.com/v4/mapbox.streets-sate
 
 map = L.map("map", {
   zoom: 10,
-  layers: [mapboxOSM],
-  zoomControl: false
+  layers: [mapboxOSM]
 }).fitWorld();
 map.attributionControl.setPrefix("");
 
@@ -103,12 +102,15 @@ function fetchData() {
   featureLayer.clearLayers();
   $("#feature-list tbody").empty();
   if (urlParams.src.indexOf(".topojson") > -1) {
-    omnivore.topojson(urlParams.src, null, featureLayer);
+    omnivore.topojson(urlParams.src, null, featureLayer).on("ready", function(layer) {
+      $("#loading").hide();
+    });
   }
   else {
-    featureLayer.loadURL(urlParams.src);
+    featureLayer.loadURL(urlParams.src).on("ready", function(layer) {
+      $("#loading").hide();
+    });
   }
-  $("#loading").hide();
 }
 
 function getTitle(layer) {
@@ -139,26 +141,6 @@ var featureLayer = L.mapbox.featureLayer();
 featureLayer.on("ready", function(e) {
   featureLayer.eachLayer(function(layer) {
     $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '"><td class="feature-name">' + getTitle(layer) + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-    if (layer instanceof L.Marker) {
-      if (layer.options.icon.options.iconSize[0] == "20") {
-        layer.setIcon(L.icon({
-          "iconUrl": layer.options.icon.options.iconUrl,
-          "className": "small-marker"
-        }));
-      }
-      else if (layer.options.icon.options.iconSize[0] == "30") {
-        layer.setIcon(L.icon({
-          "iconUrl": layer.options.icon.options.iconUrl,
-          "className": "medium-marker"
-        }));
-      }
-      else if (layer.options.icon.options.iconSize[0] == "35") {
-        layer.setIcon(L.icon({
-          "iconUrl": layer.options.icon.options.iconUrl,
-          "className": "large-marker"
-        }));
-      }
-    }
   });
   if (urlParams.title && urlParams.title.length > 0) {
     var title = decodeURI(urlParams.title);
@@ -247,13 +229,8 @@ function zoomToFeature(id) {
   }
 }
 
-var zoomControl = L.control.zoom({
-  position: "bottomright"
-}).addTo(map);
-
 /* GPS enabled geolocation control set to follow the user's location */
 var locateControl = L.control.locate({
-  position: "bottomright",
   drawCircle: true,
   follow: true,
   setView: true,

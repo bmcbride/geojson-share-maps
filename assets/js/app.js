@@ -4,8 +4,6 @@ var map, autoRefresh, featureList, sortOrder, titleField, cluster, userFields = 
 
 $(document).ready(function() {
   fetchData();
-  $("#twitter-share").attr("src", "//platform.twitter.com/widgets/tweet_button.html?url="+document.URL);
-  $(".fb-share-button").attr("data-href", document.URL);
   $("#download").attr("href", urlParams.src);
 });
 
@@ -97,6 +95,11 @@ map = L.map("map", {
 }).fitWorld();
 map.attributionControl.setPrefix("");
 
+if (urlParams.attribution) {
+  var attribution = decodeURI(urlParams.attribution);
+  map.attributionControl.setPrefix(attribution);
+}
+
 function fetchData() {
   $("#loading").show();
   featureLayer.clearLayers();
@@ -139,9 +142,36 @@ var markerClusters = new L.MarkerClusterGroup({
 var featureLayer = L.mapbox.featureLayer();
 
 featureLayer.on("ready", function(e) {
-  featureLayer.eachLayer(function(layer) {
+  featureLayer.eachLayer(function (layer) {
     $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '"><td class="feature-name">' + getTitle(layer) + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+    layer.on("click", function (e) {
+      var content = "<table class='table table-striped table-bordered table-condensed'>";
+      if (userFields.length > 0) {
+        $.each(userFields, function(index, property) {
+          if (e.target.feature.properties[property]) {
+            content += "<tr><th>" + property + "</th><td>" + formatProperty(e.target.feature.properties[property]) + "</td></tr>";
+          }
+        });
+      } else {
+        $.each(e.target.feature.properties, function(index, property) {
+          if (property) {
+            content += "<tr><th>" + index + "</th><td>" + formatProperty(property) + "</td></tr>";
+          }
+        });
+      }
+      content += "<table>";
+      $("#feature-title").html(getTitle(e.target));
+      $("#feature-info").html(content);
+      $("#featureModal").modal("show");
+      $("#share-btn").click(function() {
+        var link = location.toString() + "&id=" + L.stamp(e.target);
+        $("#share-hyperlink").attr("href", link);
+        $("#share-twitter").attr("href", "https://twitter.com/intent/tweet?url=" + encodeURIComponent(link) + "&via=fulcrumapp");
+        $("#share-facebook").attr("href", "https://facebook.com/sharer.php?u=" + encodeURIComponent(link));
+      });
+    });
   });
+
   if (urlParams.title && urlParams.title.length > 0) {
     var title = decodeURI(urlParams.title);
     $("[name='title']").html(title);
@@ -182,36 +212,13 @@ featureLayer.once("ready", function(e) {
   }
 });
 
-featureLayer.on("click", function(e) {
-  map.closePopup();
-  var content = "<table class='table table-striped table-bordered table-condensed'>";
-  $.each(e.layer.feature.properties, function(index, prop) {
-    if (!prop) {
-      prop = "";
-    }
-    if (typeof prop == "string" && (prop.indexOf("http") === 0 || prop.indexOf("https") === 0)) {
-      prop = "<a href='" + prop + "' target='_blank'>" + prop + "</a>";
-    }
-    if (userFields.length > 0) {
-      if ($.inArray(index, userFields) !== -1) {
-        content += "<tr><th>" + index + "</th><td>" + prop + "</td></tr>";
-      }
-    }
-    else {
-      content += "<tr><th>" + index + "</th><td>" + prop + "</td></tr>";
-    }
-  });
-  content += "<table>";
-  $("#feature-title").html(getTitle(e.layer));
-  $("#feature-info").html(content);
-  $("#featureModal").modal("show");
-  $("#share-btn").click(function() {
-    var link = location.toString() + "&id=" + L.stamp(e.layer);
-    $("#share-hyperlink").attr("href", link);
-    $("#share-twitter").attr("href", "https://twitter.com/intent/tweet?url=" + encodeURIComponent(link) + "&via=fulcrumapp");
-    $("#share-facebook").attr("href", "https://facebook.com/sharer.php?u=" + encodeURIComponent(link));
-  });
-});
+function formatProperty(value) {
+  if (typeof value == "string" && (value.indexOf("http") === 0 || value.indexOf("https") === 0)) {
+    return "<a href='" + value + "' target='_blank'>" + value + "</a>";
+  } else {
+    return value;
+  }
+}
 
 function zoomToFeature(id) {
   var layer = featureLayer.getLayer(id);

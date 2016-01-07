@@ -102,12 +102,15 @@ function fetchData() {
   featureLayer.clearLayers();
   $("#feature-list tbody").empty();
   if (urlParams.src.indexOf(".topojson") > -1) {
-    omnivore.topojson(urlParams.src, null, featureLayer);
+    omnivore.topojson(urlParams.src, null, featureLayer).on("ready", function(layer) {
+      $("#loading").hide();
+    });
   }
   else {
-    featureLayer.loadURL(urlParams.src);
+    featureLayer.loadURL(urlParams.src).on("ready", function(layer) {
+      $("#loading").hide();
+    });
   }
-  $("#loading").hide();
 }
 
 function getTitle(layer) {

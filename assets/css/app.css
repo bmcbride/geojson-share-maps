@@ -24,7 +24,9 @@ input[type="radio"], input[type="checkbox"] {
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 #loading {
-  display: none;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.loading-indicator {
   position: absolute;
   width: 220px;
   height: 19px;
@@ -32,6 +34,9 @@ input[type="radio"], input[type="checkbox"] {
   left: 50%;
   margin: -10px 0 0 -110px;
   z-index: 20001;
+}
+.loading-bar {
+  width: 100%;
 }
 #features {
   margin: 0px;

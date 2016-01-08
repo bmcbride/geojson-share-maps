@@ -145,6 +145,7 @@ featureLayer.on("ready", function(e) {
   featureLayer.eachLayer(function (layer) {
     $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '"><td class="feature-name">' + getTitle(layer) + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
     layer.on("click", function (e) {
+      map.closePopup();
       var content = "<table class='table table-striped table-bordered table-condensed'>";
       if (userFields.length > 0) {
         $.each(userFields, function(index, property) {

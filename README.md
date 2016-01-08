@@ -38,4 +38,8 @@ Mobile Map
 
 Mobile Sidebar
 
-![Mobile 1](http://bmcbride.github.io/geojson-share-maps/screenshots/mobile-2.png)
+![Mobile 2](http://bmcbride.github.io/geojson-share-maps/screenshots/mobile-2.png)
+
+Mobile Popup
+
+![Mobile 3](http://bmcbride.github.io/geojson-share-maps/screenshots/mobile-3.png)

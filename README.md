@@ -24,4 +24,18 @@ A responsive web mapping application for viewing GeoJSON files.
 
 ### Screenshots:
 
-![Screenshot](http://bmcbride.github.io/geojson-share-maps/screenshot.png)
+Desktop Points
+
+![Desktop 1](http://bmcbride.github.io/geojson-share-maps/screenshots/desktop-1.png)
+
+Desktop Polygons
+
+![Desktop 2](http://bmcbride.github.io/geojson-share-maps/screenshots/desktop-2.png)
+
+Mobile Map
+
+![Mobile 1](http://bmcbride.github.io/geojson-share-maps/screenshots/mobile-1.png)
+
+Mobile Sidebar
+
+![Mobile 1](http://bmcbride.github.io/geojson-share-maps/screenshots/mobile-2.png)

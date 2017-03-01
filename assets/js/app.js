@@ -144,12 +144,12 @@ function fetchData() {
   featureLayer.clearLayers();
   $("#feature-list tbody").empty();
   if (urlParams.src.indexOf(".topojson") > -1) {
-    omnivore.topojson(urlParams.src, null, featureLayer).on("ready", function(layer) {
+    omnivore.topojson(decodeURIComponent(urlParams.src), null, featureLayer).on("ready", function(layer) {
       $("#loading").hide();
     });
   }
   else {
-    featureLayer.loadURL(urlParams.src).on("ready", function(layer) {
+    featureLayer.loadURL(decodeURIComponent(urlParams.src)).on("ready", function(layer) {
       $("#loading").hide();
     });
   }

@@ -1,7 +1,14 @@
 geojson-share-maps
 ===========
 
-A responsive web mapping utility for viewing and sharing [GeoJSON](http://geojson.org/) files. Designed to be an incredibly simple and lightweight tool for quickly standing up a basic mapping application without having to write any code. Maps can be shared, embedded, and added to your mobile homescreen. Use [geojson.io](http://geojson.io/) or any other modern mapping tool to generate your GeoJSON, place it on a web server, push it to [GitHub](https://github.com/), or save it as a [Gist](https://gist.github.com/) and quickly wrap it up as a responsive web app.
+A responsive web mapping utility for viewing and sharing [GeoJSON](http://geojson.org/) files. Designed to be an incredibly simple and lightweight tool for quickly standing up a basic mapping application without having to write any code. This repo does not need to be cloned. Simply add your GeoJSON URL to the base URL. Maps can be shared, embedded, and added to your mobile homescreen. Use [geojson.io](http://geojson.io/) or any other modern mapping tool to generate your GeoJSON, place it on a web server, push it to [GitHub](https://github.com/), or save it as a [Gist](https://gist.github.com/) and quickly wrap it up as a responsive web app.
+
+### Getting Started:
+1. See examples below.
+2. Start with this base URL: `http://bmcbride.github.io/geojson-share-maps`
+3. Add your geojson as the first parameter, eg: `http://bmcbride.github.io/geojson-share-maps/?src=https://raw.githubusercontent.com/benbalter/dc-wifi-social/master/bars.geojson`
+4. Add additional parameters as desired, following examples below.
+
 
 ### Features:
 
